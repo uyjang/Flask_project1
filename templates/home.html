@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- jquery 를 사용하게 하는 링크 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+  <!-- 쿠키를 사용할 수 있게 해주는 코드 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(function() { 
+      // 문서가 준비됐을 때 에이잭스를 실행할 것이다.
+      // 화면 전환없이 데이터 처리 작업이 이루어진다. 
+      if ($.cookie('access_token')) {
+        $("#logout-div").show();
+      else {
+        $("#logout-div").hide();
+      }
+      }
+      $.ajax({
+        url:'/api/v1/users',
+        // json타입으로 콘텐츠를 가져오겠다 정의함
+        contentType: 'application/json', 
+        method:'GET',
+        // 사용자 목록 조회이기때문에 GET으로 가져옴
+        beforeSend: function(xhr) {
+          // 쿠키에 저장한 토큰을 가져오기 위해 제이쿼리문 안에서 사용하는 함수
+          xhr.setRequestHeader('Authorization', 'JWT' + $.cookie('access_token'))
+        }
+      })
+      }).done(function(res) {
+        $("#content").text(res);
+      }).error(function(res) {
+        window.location = '/login';
+      })
+    });
+    function logout() {
+      $.removecookie('access_token');
+      window.location = '/login';
+    }
+  </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-5">
+          <h1>메인</h1>
+        </div>
+        <div id="logout-div"> 
+          <button class="btn" onclick="logout();">로그아웃</button>
+        </div>
+        <div class="row mt-5" id="content">
+
+        </div>
+      </div>
+</body>
+</html>

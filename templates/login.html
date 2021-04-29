@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- jquery 를 사용하게 하는 링크 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+  <!-- 쿠키를 사용할 수 있게 해주는 코드 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA==" crossorigin="anonymous"></script>
+  <script>
+    function login(){
+      // 화면 전환없이 데이터 처리 작업이 이루어진다. 
+      $.ajax({
+        url:'/auth',
+        // json타입으로 콘텐츠를 가져오겠다 정의함
+        contentType: 'application/json', 
+        method:'POST',
+        data: JSON.stringify({
+          username:$('#userid').val(),
+          passwrod:$('#password').val(),
+      })
+      }).done(function(res) {
+        $.cookie('access_token', res.access_token);
+        // 정상적으로 실행됐으면 쿠키를 생성해서 액세스_토큰이라는 키에 res에서 가져온 액세스_토큰 값을 넣는다.
+        window.location = '/';
+      });
+    }
+  </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-5">
+          <h1>로그인</h1>
+        </div>
+        <div class="row mt-5">
+          <div class="col-12">
+            <form method="POST" action="/api/v1/users">
+              <!-- 포스트 요청을 했을 때 따로 액션을 설정하지 않아서 이 주소로 직접 포스트요청하고 페이지가 갱신되면서 다른페이지가 되던지 그런 동작들이 있었음 -->
+              <div class="form-group">
+                <label for="userid">아이디</label>
+                <input type="text" class="form-control" id="userid" placeholder="아이디" name="userid" />
+              </div>
+              <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="text" class="form-control" id="password" placeholder="비밀번호" name="password" />
+              </div>
+              <button type="button" class="btn btn-primary" onclick="login();">로그인</button>
+              <!-- submit의 경우 클릭했을 때 form 안에 설정한 액션으로 넘어가짐.  -->
+            </form>
+          </div>
+        </div>
+      </div>
+</body>
+</html>
